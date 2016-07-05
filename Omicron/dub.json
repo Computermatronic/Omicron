@@ -1,0 +1,6 @@
+{
+	"name" : "omicron",
+	"description" : "Hello World - A minimal DUB bundle.",
+	"dependencies" : {
+	}
+}
