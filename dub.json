@@ -1,0 +1,9 @@
+{
+	"name": "omicron",
+	"authors": [
+		"Sean Campbell"
+	],
+	"description": "A programming language written in dlang.",
+	"copyright": "Copyright © 2018, Sean Campbell",
+	"license": "MIT"
+}
