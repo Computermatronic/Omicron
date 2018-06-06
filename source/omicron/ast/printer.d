@@ -20,35 +20,6 @@ class ASTPrinter: ASTVisitor {
 			member.accept(this);
 		}
 	}
-	void visit(ASTEnum node) {
-		foreach(attribute; node.attributes) {
-			attribute.accept(this);
-			output.put(" ");
-		}
-		output.put("enum");
-		if (node.type !is null) {
-			output.put(":");
-			node.type.accept(this);
-		}
-		output.putf(" %s {", node.name);
-		foreach(i, member; node.members) {
-			output.put(i != 0 ? ",\n" :"\n");
-			member.accept(this);
-		}
-		output.put("\n}");
-	}
-
-	void visit(ASTEnumMember node) {
-		foreach(attribute; node.attributes) {
-			attribute.accept(this);
-			output.put(" ");
-		}
-		output.put(node.name);
-		if (node.initializer !is null) {
-			output.put(" = ");
-			node.initializer.accept(this);
-		}
-	}
 
 	void visit(ASTAlias node) {
 		foreach(attribute; node.attributes) {
@@ -86,6 +57,15 @@ class ASTPrinter: ASTVisitor {
 		output.put(";");
 	}
 
+	void visit(ASTImport node) {
+		foreach(attribute; node.attributes) {
+			attribute.accept(this);
+			output.put(" ");
+		}
+		if (node.packageName !is null) output.putf("import %s.%s;", node.packageName.join("."), node.name);
+		else output.putf("import %s;", node.name);
+	}
+
 	void visit(ASTFunction node) {
 		foreach(attribute; node.attributes) {
 			attribute.accept(this);
@@ -111,6 +91,23 @@ class ASTPrinter: ASTVisitor {
 			output.put("}");
 		} else {
 			output.put(";");
+		}
+	}
+
+	void visit(ASTDefParamater node) {
+		foreach(attribute; node.attributes) {
+			attribute.accept(this);
+			output.put(" ");
+		}
+		output.put("def");
+		if (node.type !is null) {
+			output.put(":");
+			node.type.accept(this);
+		}
+		output.putf(" %s", node.name);
+		if (node.initializer !is null) {
+			output.put(" = ");
+			node.initializer.accept(this);
 		}
 	}
 
@@ -171,17 +168,30 @@ class ASTPrinter: ASTVisitor {
 		}
 	}
 
-	void visit(ASTDefParamater node) {
+	void visit(ASTEnum node) {
 		foreach(attribute; node.attributes) {
 			attribute.accept(this);
 			output.put(" ");
 		}
-		output.put("def");
+		output.put("enum");
 		if (node.type !is null) {
 			output.put(":");
 			node.type.accept(this);
 		}
-		output.putf(" %s", node.name);
+		output.putf(" %s {", node.name);
+		foreach(i, member; node.members) {
+			output.put(i != 0 ? ",\n" :"\n");
+			member.accept(this);
+		}
+		output.put("\n}");
+	}
+
+	void visit(ASTEnumMember node) {
+		foreach(attribute; node.attributes) {
+			attribute.accept(this);
+			output.put(" ");
+		}
+		output.put(node.name);
 		if (node.initializer !is null) {
 			output.put(" = ");
 			node.initializer.accept(this);
@@ -251,42 +261,6 @@ class ASTPrinter: ASTVisitor {
 		output.put("}");
 	}
 
-	void visit(ASTOperator node) {
-		foreach(attribute; node.attributes) {
-			attribute.accept(this);
-			output.put(" ");
-		}
-		output.put("operator");
-		if (node.type !is null) {
-			output.put(":");
-			node.type.accept(this);
-		}
-		output.putf(" %s(", node.name);
-		foreach(i, paramater; node.paramaters) {
-			output.put(i != 0 ? ", " :"");
-			paramater.accept(this);
-		}
-		output.put(")");
-		if (!node.isLinkage) {
-			output.put(" {\n");
-			foreach(member; node.members) {
-				member.accept(this);
-				output.put("\n");
-			}
-			output.put("}");
-		} else {
-			output.put(";");
-		}
-	}
-
-	void visit(ASTImport node) {
-		foreach(attribute; node.attributes) {
-			attribute.accept(this);
-			output.put(" ");
-		}
-		output.putf("import %s;", node.fullName.join("."));
-	}
-
 	void visit(ASTIf node) {
 		foreach(attribute; node.attributes) {
 			attribute.accept(this);
@@ -309,64 +283,6 @@ class ASTPrinter: ASTVisitor {
 			output.put(" ");
 		}
 		output.put("else {\n");
-		foreach(member; node.members) {
-			member.accept(this);
-			output.put("\n");
-		}
-		output.put("}");
-	}
-
-	void visit(ASTForeach node) {
-		foreach(attribute; node.attributes) {
-			attribute.accept(this);
-			output.put(" ");
-		}
-		output.put("foreach(");
-		foreach(i, initializer; node.initializers) {
-			output.put(i != 0 ? ", " : "");
-			initializer.accept(this);
-		}
-		output.put(";");
-		node.subject.accept(this);
-		output.put(") {\n");
-		foreach(member; node.members) {
-			member.accept(this);
-			output.put("\n");
-		}
-		output.put("}");
-	}
-
-	void visit(ASTFor node) {
-		foreach(attribute; node.attributes) {
-			attribute.accept(this);
-			output.put(" ");
-		}
-		output.put("for(");
-		if (node.initializer !is null) node.initializer.accept(this);
-		output.put(";");
-		if (node.subject !is null) node.subject.accept(this);
-		output.put(";");
-		if (node.step !is null) node.step.accept(this);
-		output.put(") {\n");
-		foreach(member; node.members) {
-			member.accept(this);
-			output.put("\n");
-		}
-		output.put("}");
-	}
-
-	void visit(ASTWhile node) {
-		foreach(attribute; node.attributes) {
-			attribute.accept(this);
-			output.put(" ");
-		}
-		foreach(attribute; node.attributes) {
-			attribute.accept(this);
-			output.put(" ");
-		}
-		output.put("while(");
-		node.subject.accept(this);
-		output.put(") {\n");
 		foreach(member; node.members) {
 			member.accept(this);
 			output.put("\n");
@@ -406,6 +322,25 @@ class ASTPrinter: ASTVisitor {
 		}
 	}
 
+	void visit(ASTWhile node) {
+		foreach(attribute; node.attributes) {
+			attribute.accept(this);
+			output.put(" ");
+		}
+		foreach(attribute; node.attributes) {
+			attribute.accept(this);
+			output.put(" ");
+		}
+		output.put("while(");
+		node.subject.accept(this);
+		output.put(") {\n");
+		foreach(member; node.members) {
+			member.accept(this);
+			output.put("\n");
+		}
+		output.put("}");
+	}
+
 	void visit(ASTDoWhile node) {
 		foreach(attribute; node.attributes) {
 			attribute.accept(this);
@@ -423,6 +358,45 @@ class ASTPrinter: ASTVisitor {
 		output.put("} while(");
 		node.subject.accept(this);
 		output.put(");");
+	}
+
+	void visit(ASTFor node) {
+		foreach(attribute; node.attributes) {
+			attribute.accept(this);
+			output.put(" ");
+		}
+		output.put("for(");
+		if (node.initializer !is null) node.initializer.accept(this);
+		output.put(";");
+		if (node.subject !is null) node.subject.accept(this);
+		output.put(";");
+		if (node.step !is null) node.step.accept(this);
+		output.put(") {\n");
+		foreach(member; node.members) {
+			member.accept(this);
+			output.put("\n");
+		}
+		output.put("}");
+	}
+
+	void visit(ASTForeach node) {
+		foreach(attribute; node.attributes) {
+			attribute.accept(this);
+			output.put(" ");
+		}
+		output.put("foreach(");
+		foreach(i, initializer; node.initializers) {
+			output.put(i != 0 ? ", " : "");
+			initializer.accept(this);
+		}
+		output.put(";");
+		node.subject.accept(this);
+		output.put(") {\n");
+		foreach(member; node.members) {
+			member.accept(this);
+			output.put("\n");
+		}
+		output.put("}");
 	}
 
 	void visit(ASTWith node) {

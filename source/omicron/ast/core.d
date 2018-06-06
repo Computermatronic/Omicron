@@ -11,28 +11,27 @@ import omicron.ast.token;
 
 interface ASTVisitor {
 	void visit(ASTModule);
-	void visit(ASTEnum);
-	void visit(ASTEnumMember);
 	void visit(ASTAlias);
 	void visit(ASTDef);
+	void visit(ASTImport);
 	void visit(ASTFunction);
+	void visit(ASTDefParamater);
 	void visit(ASTTemplate);
 	void visit(ASTTypeParamater);
 	void visit(ASTAliasParamater);
-	void visit(ASTDefParamater);
+	void visit(ASTEnum);
+	void visit(ASTEnumMember);
 	void visit(ASTStruct);
 	void visit(ASTClass);
 	void visit(ASTInterface);
-	void visit(ASTOperator);
-	void visit(ASTImport);
 	void visit(ASTIf);
 	void visit(ASTElse);
-	void visit(ASTForeach);
-	void visit(ASTFor);
-	void visit(ASTWhile);
 	void visit(ASTSwitch);
 	void visit(ASTCase);
+	void visit(ASTWhile);
 	void visit(ASTDoWhile);
+	void visit(ASTFor);
+	void visit(ASTForeach);
 	void visit(ASTWith);
 	void visit(ASTDelete);
 	void visit(ASTReturn);
@@ -95,19 +94,6 @@ class ASTModule : ASTDeclaration {
 	mixin Visitor!(ASTVisitor);
 }
 
-class ASTEnum: ASTDeclaration {
-	ASTReference type;
-	ASTEnumMember[] members;
-
-	mixin Visitor!(ASTVisitor);
-}
-
-class ASTEnumMember: ASTDeclaration {
-	ASTExpression initializer;
-
-	mixin Visitor!(ASTVisitor);
-}
-
 class ASTAlias: ASTDeclaration {
 	ASTReference type;
 	ASTExpression initializer;
@@ -122,6 +108,12 @@ class ASTDef: ASTDeclaration {
 	mixin Visitor!(ASTVisitor);
 }
 
+class ASTImport: ASTDeclaration {
+	string[] packageName;
+
+	mixin Visitor!(ASTVisitor);
+}
+
 class ASTFunction: ASTDeclaration {
 	ASTReference type;
 	ASTDefParamater[] paramaters;
@@ -129,6 +121,13 @@ class ASTFunction: ASTDeclaration {
 
 	bool isVaridic;
 	bool isLinkage;
+
+	mixin Visitor!(ASTVisitor);
+}
+
+class ASTDefParamater: ASTDeclaration {
+	ASTReference type;
+	ASTExpression initializer;
 
 	mixin Visitor!(ASTVisitor);
 }
@@ -157,8 +156,14 @@ class ASTAliasParamater: ASTDeclaration {
 	mixin Visitor!(ASTVisitor);
 }
 
-class ASTDefParamater: ASTDeclaration {
+class ASTEnum: ASTDeclaration {
 	ASTReference type;
+	ASTEnumMember[] members;
+
+	mixin Visitor!(ASTVisitor);
+}
+
+class ASTEnumMember: ASTDeclaration {
 	ASTExpression initializer;
 
 	mixin Visitor!(ASTVisitor);
@@ -187,23 +192,6 @@ class ASTInterface: ASTDeclaration {
 	mixin Visitor!(ASTVisitor);
 }
 
-class ASTOperator: ASTDeclaration {
-	ASTReference type;
-	ASTDefParamater[] paramaters;
-	ASTStatement[] members;
-
-	bool isVaridic;
-	bool isLinkage;
-
-	mixin Visitor!(ASTVisitor);
-}
-
-class ASTImport: ASTStatic {
-	string[] fullName;
-
-	mixin Visitor!(ASTVisitor);
-}
-
 class ASTIf: ASTStatic {
 	ASTExpression subject;
 	ASTStatement[] members;
@@ -213,30 +201,6 @@ class ASTIf: ASTStatic {
 }
 
 class ASTElse: ASTStatic {
-	ASTStatement[] members;
-
-	mixin Visitor!(ASTVisitor);
-}
-
-class ASTForeach: ASTStatic {
-	ASTDefParamater[] initializers;
-	ASTExpression subject;
-	ASTStatement[] members;
-
-	mixin Visitor!(ASTVisitor);
-}
-
-class ASTFor: ASTStatement {
-	ASTDefParamater initializer;
-	ASTExpression subject;
-	ASTExpression step;
-	ASTStatement[] members;
-
-	mixin Visitor!(ASTVisitor);
-}
-
-class ASTWhile: ASTStatement {
-	ASTExpression subject;
 	ASTStatement[] members;
 
 	mixin Visitor!(ASTVisitor);
@@ -258,7 +222,31 @@ class ASTCase: ASTStatement {
 	mixin Visitor!(ASTVisitor);
 }
 
+class ASTWhile: ASTStatement {
+	ASTExpression subject;
+	ASTStatement[] members;
+
+	mixin Visitor!(ASTVisitor);
+}
+
 class ASTDoWhile: ASTStatement  {
+	ASTExpression subject;
+	ASTStatement[] members;
+
+	mixin Visitor!(ASTVisitor);
+}
+
+class ASTFor: ASTStatement {
+	ASTDefParamater initializer;
+	ASTExpression subject;
+	ASTExpression step;
+	ASTStatement[] members;
+
+	mixin Visitor!(ASTVisitor);
+}
+
+class ASTForeach: ASTStatic {
+	ASTDefParamater[] initializers;
 	ASTExpression subject;
 	ASTStatement[] members;
 

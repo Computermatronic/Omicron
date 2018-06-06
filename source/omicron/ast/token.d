@@ -100,7 +100,6 @@ enum TokenType {
 	kw_class,
 	kw_interface,
 	kw_function,
-	kw_operator,
 	kw_def,
 	kw_alias,
 
@@ -197,7 +196,6 @@ enum TokenType[string] tokenNameMap = [
 	"class": TokenType.kw_class,
 	"interface": TokenType.kw_interface,
 	"function": TokenType.kw_function,
-	"operator": TokenType.kw_operator,
 	"def": TokenType.kw_def,
 	"alias": TokenType.kw_alias,
 
@@ -288,7 +286,6 @@ enum tokenDescriptionMap = [
 	TokenType.kw_class: "class",
 	TokenType.kw_interface: "interface",
 	TokenType.kw_function: "function",
-	TokenType.kw_operator: "operator",
 	TokenType.kw_def: "def",
 	TokenType.kw_alias: "alias",
 

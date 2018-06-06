@@ -21,7 +21,7 @@ ASTModule parseTokens(Token[] tokens) {
 ASTStatement parseStatement(ParserState state) {
 	nextStatement: switch(state.front.type) with(TokenType) {
 		case kw_enum, kw_alias, kw_def, kw_function, kw_template, kw_struct, kw_class, 
-			kw_interface, kw_operator, kw_if, kw_foreach, kw_import: return state.parseStatic();
+			kw_interface, kw_if, kw_foreach, kw_import: return state.parseStatic();
 		case kw_for: return state.parseFor();
 		case kw_while: return state.parseWhile();
 		case kw_switch: return state.parseSwitch();
@@ -39,10 +39,9 @@ ASTStatement parseStatement(ParserState state) {
 ASTStatic parseStatic(ParserState state) {
 	nextStatic: switch(state.front.type) with(TokenType) {
 		case kw_enum, kw_alias, kw_def, kw_function, kw_template, kw_struct, kw_class, 
-			kw_interface, kw_operator: return state.parseDeclaration();
+			kw_interface, kw_import: return state.parseDeclaration();
 		case kw_if: return state.parseIf();
 		case kw_foreach: return state.parseForeach();
-		case kw_import: return state.parseImport();
 		case tk_at: state.parseAttributes(); goto nextStatic;
 		default: throw new ParserException(format("Unrecognized declaration %s", state.front.text), state.front.location);
 	}
@@ -58,7 +57,7 @@ ASTDeclaration parseDeclaration(ParserState state) {
 		case kw_struct: return state.parseStruct();
 		case kw_class: return state.parseClass();
 		case kw_interface: return state.parseInterface();
-		case kw_operator: return state.parseOperator();
+		case kw_import: return state.parseImport();
 		case tk_at: state.parseAttributes(); goto nextDeclaration;
 		default: throw new ParserException(format("Unrecognized declaration %s", state.front.text), state.front.location);
 	}
@@ -108,6 +107,16 @@ ASTExpression parseExpression(ParserState state, int precedence = int.max) {
 			node.operator = cast(ASTUnaryOperator.Operator)state.popFront().type;
 			node.subject = state.parseExpression(Precedence.unaryIncrementOperator);
 			expression = node;
+			break;
+
+		case kw_if:
+			auto node = state.makeNode!ASTTinaryOperator(TokenType.tk_question);
+			state.expectToken(TokenType.tk_leftParen);
+			node.subject = state.parseExpression();
+			state.expectToken(TokenType.tk_rightParen);
+			node.lhs = state.parseExpression();
+			state.expectToken(TokenType.kw_else);
+			node.rhs = state.parseExpression();
 			break;
 
 		case kw_cast:
@@ -207,7 +216,7 @@ ASTExpression parseExpression(ParserState state, int precedence = int.max) {
 				goto nextExpression;
 			} else goto case;
 
-		case tk_slash, tk_percent:
+		case tk_slash, tk_percent, tk_power:
 			if (Precedence.multiplacativeOperator > precedence) break;
 			auto node = state.makeNode!ASTBinaryOperator();
 			node.lhs = expression;
@@ -323,20 +332,6 @@ ASTExpression parseExpression(ParserState state, int precedence = int.max) {
 			node.subject = expression;
 			expression = node;
 			break;
-
-		case tk_question:
-			if (Precedence.tinary > precedence) break;
-			auto node = state.makeNode!ASTTinaryOperator(TokenType.tk_question);
-			node.subject = expression;
-			state.expectToken(TokenType.tk_leftParen);
-			node.lhs = state.parseExpression();
-			state.expectToken(TokenType.tk_rightParen);
-			state.expectToken(TokenType.tk_colon);
-			state.expectToken(TokenType.tk_leftParen);
-			node.rhs = state.parseExpression();
-			state.expectToken(TokenType.tk_rightParen);
-			expression = node;
-			goto nextExpression;
 
 		case tk_assign, tk_assignAdd, tk_assignSubtract, tk_assignMultiply, tk_assignDivide, tk_assignModulo, tk_assignPower,
 		tk_assignConcat, tk_assignAnd, tk_assignOr, tk_assignXor:
@@ -517,23 +512,6 @@ ASTModule parseModule(ParserState state) {
 	return node;
 }
 
-ASTEnum parseEnum(ParserState state) {
-	auto node = state.makeNode!ASTEnum(TokenType.kw_enum);
-	if (state.advanceForToken(TokenType.tk_colon)) node.type = state.parseReference();
-	node.name = state.expectToken(TokenType.ud_identifier).text;
-	state.expectToken(TokenType.tk_leftBrace);
-	node.members = state.parseList!parseEnumMember();
-	state.expectToken(TokenType.tk_rightBrace);
-	return node;
-}
-
-ASTEnumMember parseEnumMember(ParserState state) {
-	auto node = state.makeNode!ASTEnumMember();
-	node.name = state.expectToken(TokenType.ud_identifier).text;
-	if (state.advanceForToken(TokenType.tk_assign)) node.initializer = state.parseExpression();
-	return node;
-}
-
 ASTAlias parseAlias(ParserState state) {
 	auto node = state.makeNode!ASTAlias(TokenType.kw_alias);
 	if (state.advanceForToken(TokenType.tk_colon)) node.type = state.parseReference();
@@ -553,6 +531,18 @@ ASTDef parseDef(ParserState state) {
 	return node;
 }
 
+ASTImport parseImport(ParserState state) {
+	auto node = state.makeNode!ASTImport(TokenType.kw_import);
+	string[] fullName;
+	do {
+		fullName ~= state.expectToken(TokenType.ud_identifier).text;
+	} while(!state.empty && state.advanceForToken(TokenType.tk_dot));
+	node.name = fullName[$-1];
+	node.packageName = fullName[0..$-1];
+	state.expectToken(TokenType.tk_semicolon);
+	return node;
+}
+
 ASTFunction parseFunction(ParserState state) {
 	auto node = state.makeNode!ASTFunction(TokenType.kw_function);
 	if (state.advanceForToken(TokenType.tk_colon)) node.type = state.parseReference();
@@ -565,15 +555,11 @@ ASTFunction parseFunction(ParserState state) {
 	return node;
 }
 
-ASTOperator parseOperator(ParserState state) {
-	auto node = state.makeNode!ASTOperator(TokenType.kw_operator);
+ASTDefParamater parseDefParamater(ParserState state) {
+	auto node = state.makeNode!ASTDefParamater(TokenType.kw_def);
 	if (state.advanceForToken(TokenType.tk_colon)) node.type = state.parseReference();
 	node.name = state.expectToken(TokenType.ud_identifier).text;
-	auto paramaters = state.parseParamaters!parseDefParamater();
-	node.paramaters = paramaters[0];
-	node.isVaridic = paramaters[1];
-	if (state.advanceForToken(TokenType.tk_semicolon)) node.isLinkage = true;
-	else node.members = state.parseBlock!parseStatement();
+	if (state.advanceForToken(TokenType.tk_assign)) node.initializer = state.parseExpression();
 	return node;
 }
 
@@ -605,9 +591,18 @@ ASTAliasParamater parseAliasParamater(ParserState state) {
 	return node;
 }
 
-ASTDefParamater parseDefParamater(ParserState state) {
-	auto node = state.makeNode!ASTDefParamater(TokenType.kw_def);
+ASTEnum parseEnum(ParserState state) {
+	auto node = state.makeNode!ASTEnum(TokenType.kw_enum);
 	if (state.advanceForToken(TokenType.tk_colon)) node.type = state.parseReference();
+	node.name = state.expectToken(TokenType.ud_identifier).text;
+	state.expectToken(TokenType.tk_leftBrace);
+	node.members = state.parseList!parseEnumMember();
+	state.expectToken(TokenType.tk_rightBrace);
+	return node;
+}
+
+ASTEnumMember parseEnumMember(ParserState state) {
+	auto node = state.makeNode!ASTEnumMember();
 	node.name = state.expectToken(TokenType.ud_identifier).text;
 	if (state.advanceForToken(TokenType.tk_assign)) node.initializer = state.parseExpression();
 	return node;
@@ -654,48 +649,6 @@ ASTElse parseElse(ParserState state) {
 	return node;
 }
 
-ASTForeach parseForeach(ParserState state) {
-	auto node = state.makeNode!ASTForeach(TokenType.kw_foreach);
-	state.expectToken(TokenType.tk_leftParen);
-	node.initializers = state.parseList!parseDefParamater();
-	state.expectToken(TokenType.tk_semicolon);
-	node.subject = state.parseExpression();
-	state.expectToken(TokenType.tk_rightParen);
-	node.members = state.parseBlock!parseStatement();
-	return node;
-}
-
-ASTImport parseImport(ParserState state) {
-	auto node = state.makeNode!ASTImport(TokenType.kw_import);
-	do {
-		node.fullName ~= state.expectToken(TokenType.ud_identifier).text;
-	} while(!state.empty && state.advanceForToken(TokenType.tk_dot));
-	state.expectToken(TokenType.tk_semicolon);
-	return node;
-}
-
-ASTFor parseFor(ParserState state) {
-	auto node = state.makeNode!ASTFor(TokenType.kw_for);
-	state.expectToken(TokenType.tk_leftParen);
-	if (state.testForToken(TokenType.kw_def)) node.initializer = state.parseDefParamater();
-	state.expectToken(TokenType.tk_semicolon);
-	if (!state.testForToken(TokenType.tk_semicolon)) node.subject = state.parseExpression();
-	state.expectToken(TokenType.tk_semicolon);
-	if (!state.testForToken(TokenType.tk_leftParen)) node.step = state.parseExpression();
-	state.expectToken(TokenType.tk_rightParen);
-	node.members = state.parseBlock!parseStatement();
-	return node;
-}
-
-ASTWhile parseWhile(ParserState state) {
-	auto node = state.makeNode!ASTWhile(TokenType.kw_while);
-	state.expectToken(TokenType.tk_leftParen);
-	node.subject = state.parseExpression();
-	state.expectToken(TokenType.tk_rightParen);
-	node.members = state.parseBlock!parseStatement();
-	return node;
-}
-
 ASTSwitch parseSwitch(ParserState state) {
 	auto node = state.makeNode!ASTSwitch(TokenType.kw_switch);
 	state.expectToken(TokenType.tk_leftParen);
@@ -721,6 +674,15 @@ ASTCase parseCase(ParserState state) {
 	return node;
 }
 
+ASTWhile parseWhile(ParserState state) {
+	auto node = state.makeNode!ASTWhile(TokenType.kw_while);
+	state.expectToken(TokenType.tk_leftParen);
+	node.subject = state.parseExpression();
+	state.expectToken(TokenType.tk_rightParen);
+	node.members = state.parseBlock!parseStatement();
+	return node;
+}
+
 ASTDoWhile parseDoWhile(ParserState state) {
 	auto node = state.makeNode!ASTDoWhile(TokenType.kw_do);
 	node.members = state.parseBlock!parseStatement();
@@ -728,6 +690,30 @@ ASTDoWhile parseDoWhile(ParserState state) {
 	state.expectToken(TokenType.tk_leftParen);
 	node.subject = state.parseExpression();
 	state.expectToken(TokenType.tk_rightParen);
+	return node;
+}
+
+ASTFor parseFor(ParserState state) {
+	auto node = state.makeNode!ASTFor(TokenType.kw_for);
+	state.expectToken(TokenType.tk_leftParen);
+	if (state.testForToken(TokenType.kw_def)) node.initializer = state.parseDefParamater();
+	state.expectToken(TokenType.tk_semicolon);
+	if (!state.testForToken(TokenType.tk_semicolon)) node.subject = state.parseExpression();
+	state.expectToken(TokenType.tk_semicolon);
+	if (!state.testForToken(TokenType.tk_leftParen)) node.step = state.parseExpression();
+	state.expectToken(TokenType.tk_rightParen);
+	node.members = state.parseBlock!parseStatement();
+	return node;
+}
+
+ASTForeach parseForeach(ParserState state) {
+	auto node = state.makeNode!ASTForeach(TokenType.kw_foreach);
+	state.expectToken(TokenType.tk_leftParen);
+	node.initializers = state.parseList!parseDefParamater();
+	state.expectToken(TokenType.tk_semicolon);
+	node.subject = state.parseExpression();
+	state.expectToken(TokenType.tk_rightParen);
+	node.members = state.parseBlock!parseStatement();
 	return node;
 }
 
