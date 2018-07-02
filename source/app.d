@@ -11,7 +11,7 @@ import omicron.ast;
 
 void main()
 {
-	auto sourceFile = "test.zs";
+	auto sourceFile = "test/lexer-test.om";
 	auto tokens = lexString(sourceFile, sourceFile.readText);
 
 	auto module_ = parseTokens(tokens);

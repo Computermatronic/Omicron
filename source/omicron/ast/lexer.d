@@ -33,7 +33,11 @@ auto lexString(string file, string text) {
 			continue;
 		}
 
-		//TODO: support nested block comments.
+
+		if (state.frontN(2) == `\+`) {
+			state.parseNestedBlockComment();
+			continue;
+		}
 
 		if (state.front == '\'') {
 			state.pushToken(state.parseCharacter());
@@ -92,6 +96,21 @@ Token parseBlockComment(LexerState state) {
 		result.put(state.popFront());
 	}
 	if (state.empty) throw new LexerException("Unterminated block comment.", location);
+	state.popFront();
+	return Token(TokenType.ud_comment, location, result.data);
+}
+
+Token parseNestedBlockComment(LexerState state) {
+	auto location = state.location;
+	Appender!string result;
+	size_t blockCommentCount = 1;
+	state.popFront();
+	while (!state.empty && blockCommentCount > 0) {
+		if (state.frontN(2) == "/+") blockCommentCount++;
+		if (state.frontN(2) == "+/") blockCommentCount--;
+		result.put(state.popFront());
+	}
+	if (state.empty) throw new LexerException("Unterminated nested block comment.", location);
 	state.popFront();
 	return Token(TokenType.ud_comment, location, result.data);
 }
@@ -212,5 +231,31 @@ class LexerState {
 class LexerException : Exception {
 	this(string msg, SourceLocation location, string file = __FILE__, size_t line = __LINE__) {
 		super(msg ~ " in " ~ location.toString(), file, line);
+	}
+}
+
+unittest {
+	import std.file;
+	import std.json;
+	import std.conv;
+
+	string lexerUnittestSource = readText("test/lexer-test.om");
+	string lexerUnittestJson = readText("test/lexer-test.json");
+
+	auto tokens = lexString("lexer-test.om", lexerUnittestSource);
+	auto json = parseJSON(lexerUnittestJson).array;
+
+	assert(tokens.length == json.length, 
+		format("Incorrect number of tokens produced by lexer %s (expected %s).", tokens.length, json.length));
+
+	for(size_t i = 0; i < json.length; i++) {
+		assert(tokens[i].type.to!string == json[i].object["token"].str, 
+			format("Incorrect token %s, expected %s", tokens[i].type, json[i].object["token"].str));
+		assert(tokens[i].text == json[i].object["text"].str,
+			format("Incorrect text %s, expected %s", tokens[i].text, json[i].object["text"].str));
+		assert(tokens[i].location.line == json[i].object["line"].integer,
+			format("Incorrect line %s, expected %s", tokens[i].text, json[i].object["line"].integer));
+		assert(tokens[i].location.colunm == json[i].object["colunm"].integer,
+			format("Incorrect text %s, expected %s", tokens[i].text, json[i].object["colunm"].integer));
 	}
 }

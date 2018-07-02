@@ -11,3 +11,4 @@ docs/
 *.dlangidews
 *.dlangidews.wssettings
 *.settings
+*.sublime*

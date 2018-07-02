@@ -1,3 +1,10 @@
+/* 
+ * The official Omicron compiler.
+ * Reference implementation of the Omicron programming language.
+ * Copyright (c) 2018 by Sean Campbell.
+ * Written by Sean Campbell.
+ * Distributed under The MIT License (See LICENCE file).
+ */
 module omicron.ast.printer;
 
 import std.array : Appender;

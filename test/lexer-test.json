@@ -1,0 +1,1562 @@
+[
+    {
+        "colunm": 1,
+        "line": 0,
+        "text": "module",
+        "token": "kw_module"
+    },
+    {
+        "colunm": 7,
+        "line": 1,
+        "text": "zeta",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 1,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 12,
+        "line": 1,
+        "text": "testmodule",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 22,
+        "line": 1,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 0,
+        "line": 2,
+        "text": "class",
+        "token": "kw_class"
+    },
+    {
+        "colunm": 6,
+        "line": 3,
+        "text": "LexerState",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 17,
+        "line": 3,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 4,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 4,
+        "line": 4,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 5,
+        "line": 4,
+        "text": "string",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 12,
+        "line": 4,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 16,
+        "line": 4,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 5,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 4,
+        "line": 5,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 5,
+        "line": 5,
+        "text": "size_t",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 12,
+        "line": 5,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 20,
+        "line": 5,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 6,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 4,
+        "line": 6,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 5,
+        "line": 6,
+        "text": "string",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 12,
+        "line": 6,
+        "text": "file",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 16,
+        "line": 6,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 7,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 4,
+        "line": 7,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 5,
+        "line": 7,
+        "text": "Appender",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 13,
+        "line": 7,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 14,
+        "line": 7,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 15,
+        "line": 7,
+        "text": "Token",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 20,
+        "line": 7,
+        "text": "[",
+        "token": "tk_leftBracket"
+    },
+    {
+        "colunm": 21,
+        "line": 7,
+        "text": "]",
+        "token": "tk_rightBracket"
+    },
+    {
+        "colunm": 22,
+        "line": 7,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 24,
+        "line": 7,
+        "text": "tokenBuffer",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 35,
+        "line": 7,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 9,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 10,
+        "line": 9,
+        "text": "this",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 14,
+        "line": 9,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 15,
+        "line": 9,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 18,
+        "line": 9,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 19,
+        "line": 9,
+        "text": "string",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 26,
+        "line": 9,
+        "text": "file",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 30,
+        "line": 9,
+        "text": ",",
+        "token": "tk_comma"
+    },
+    {
+        "colunm": 32,
+        "line": 9,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 35,
+        "line": 9,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 36,
+        "line": 9,
+        "text": "string",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 43,
+        "line": 9,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 47,
+        "line": 9,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 49,
+        "line": 9,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 10,
+        "text": "this",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 6,
+        "line": 10,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 7,
+        "line": 10,
+        "text": "file",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 12,
+        "line": 10,
+        "text": "=",
+        "token": "tk_assign"
+    },
+    {
+        "colunm": 14,
+        "line": 10,
+        "text": "file",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 18,
+        "line": 10,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 2,
+        "line": 11,
+        "text": "this",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 6,
+        "line": 11,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 7,
+        "line": 11,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 12,
+        "line": 11,
+        "text": "=",
+        "token": "tk_assign"
+    },
+    {
+        "colunm": 14,
+        "line": 11,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 18,
+        "line": 11,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 12,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 14,
+        "text": "@",
+        "token": "tk_at"
+    },
+    {
+        "colunm": 2,
+        "line": 14,
+        "text": "property",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 14,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 19,
+        "line": 14,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 20,
+        "line": 14,
+        "text": "bool",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 25,
+        "line": 14,
+        "text": "empty",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 30,
+        "line": 14,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 31,
+        "line": 14,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 33,
+        "line": 14,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 15,
+        "text": "a",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 4,
+        "line": 15,
+        "text": "*",
+        "token": "tk_asterick"
+    },
+    {
+        "colunm": 6,
+        "line": 15,
+        "text": "b",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 8,
+        "line": 15,
+        "text": "+",
+        "token": "tk_plus"
+    },
+    {
+        "colunm": 10,
+        "line": 15,
+        "text": "c",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 15,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 2,
+        "line": 16,
+        "text": "a",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 4,
+        "line": 16,
+        "text": "+",
+        "token": "tk_plus"
+    },
+    {
+        "colunm": 6,
+        "line": 16,
+        "text": "b",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 8,
+        "line": 16,
+        "text": "*",
+        "token": "tk_asterick"
+    },
+    {
+        "colunm": 10,
+        "line": 16,
+        "text": "c",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 16,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 2,
+        "line": 17,
+        "text": "return",
+        "token": "kw_return"
+    },
+    {
+        "colunm": 9,
+        "line": 17,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 18,
+        "line": 17,
+        "text": ">=",
+        "token": "tk_greaterThanEqual"
+    },
+    {
+        "colunm": 21,
+        "line": 17,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 25,
+        "line": 17,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 26,
+        "line": 17,
+        "text": "length",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 32,
+        "line": 17,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 18,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 20,
+        "text": "@",
+        "token": "tk_at"
+    },
+    {
+        "colunm": 2,
+        "line": 20,
+        "text": "property",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 20,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 19,
+        "line": 20,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 20,
+        "line": 20,
+        "text": "size_t",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 27,
+        "line": 20,
+        "text": "length",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 33,
+        "line": 20,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 34,
+        "line": 20,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 36,
+        "line": 20,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 21,
+        "text": "return",
+        "token": "kw_return"
+    },
+    {
+        "colunm": 9,
+        "line": 21,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 13,
+        "line": 21,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 14,
+        "line": 21,
+        "text": "length",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 21,
+        "line": 21,
+        "text": "-",
+        "token": "tk_minus"
+    },
+    {
+        "colunm": 23,
+        "line": 21,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 31,
+        "line": 21,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 22,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 24,
+        "text": "@",
+        "token": "tk_at"
+    },
+    {
+        "colunm": 2,
+        "line": 24,
+        "text": "property",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 24,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 19,
+        "line": 24,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 20,
+        "line": 24,
+        "text": "dchar",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 26,
+        "line": 24,
+        "text": "front",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 31,
+        "line": 24,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 32,
+        "line": 24,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 34,
+        "line": 24,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 25,
+        "text": "return",
+        "token": "kw_return"
+    },
+    {
+        "colunm": 9,
+        "line": 25,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 13,
+        "line": 25,
+        "text": "[",
+        "token": "tk_leftBracket"
+    },
+    {
+        "colunm": 14,
+        "line": 25,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 22,
+        "line": 25,
+        "text": "]",
+        "token": "tk_rightBracket"
+    },
+    {
+        "colunm": 23,
+        "line": 25,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 26,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 28,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 9,
+        "line": 28,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 10,
+        "line": 28,
+        "text": "dchar",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 16,
+        "line": 28,
+        "text": "popFront",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 24,
+        "line": 28,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 25,
+        "line": 28,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 27,
+        "line": 28,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 29,
+        "text": "return",
+        "token": "kw_return"
+    },
+    {
+        "colunm": 9,
+        "line": 29,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 13,
+        "line": 29,
+        "text": "[",
+        "token": "tk_leftBracket"
+    },
+    {
+        "colunm": 14,
+        "line": 29,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 22,
+        "line": 29,
+        "text": "++",
+        "token": "tk_increment"
+    },
+    {
+        "colunm": 24,
+        "line": 29,
+        "text": "]",
+        "token": "tk_rightBracket"
+    },
+    {
+        "colunm": 25,
+        "line": 29,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 30,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 32,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 9,
+        "line": 32,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 10,
+        "line": 32,
+        "text": "string",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 17,
+        "line": 32,
+        "text": "frontN",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 23,
+        "line": 32,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 24,
+        "line": 32,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 27,
+        "line": 32,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 28,
+        "line": 32,
+        "text": "size_t",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 35,
+        "line": 32,
+        "text": "amount",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 41,
+        "line": 32,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 43,
+        "line": 32,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 33,
+        "text": "return",
+        "token": "kw_return"
+    },
+    {
+        "colunm": 9,
+        "line": 33,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 13,
+        "line": 33,
+        "text": "[",
+        "token": "tk_leftBracket"
+    },
+    {
+        "colunm": 14,
+        "line": 33,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 23,
+        "line": 33,
+        "text": "..",
+        "token": "tk_slice"
+    },
+    {
+        "colunm": 26,
+        "line": 33,
+        "text": "min",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 29,
+        "line": 33,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 30,
+        "line": 33,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 39,
+        "line": 33,
+        "text": "+",
+        "token": "tk_plus"
+    },
+    {
+        "colunm": 41,
+        "line": 33,
+        "text": "amount",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 47,
+        "line": 33,
+        "text": ",",
+        "token": "tk_comma"
+    },
+    {
+        "colunm": 49,
+        "line": 33,
+        "text": "$",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 50,
+        "line": 33,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 51,
+        "line": 33,
+        "text": "]",
+        "token": "tk_rightBracket"
+    },
+    {
+        "colunm": 52,
+        "line": 33,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 34,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 36,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 9,
+        "line": 36,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 10,
+        "line": 36,
+        "text": "string",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 17,
+        "line": 36,
+        "text": "popFrontN",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 26,
+        "line": 36,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 27,
+        "line": 36,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 30,
+        "line": 36,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 31,
+        "line": 36,
+        "text": "size_t",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 38,
+        "line": 36,
+        "text": "amount",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 44,
+        "line": 36,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 46,
+        "line": 36,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 37,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 6,
+        "line": 37,
+        "text": "result",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 13,
+        "line": 37,
+        "text": "=",
+        "token": "tk_assign"
+    },
+    {
+        "colunm": 15,
+        "line": 37,
+        "text": "this",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 19,
+        "line": 37,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 20,
+        "line": 37,
+        "text": "frontN",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 26,
+        "line": 37,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 27,
+        "line": 37,
+        "text": "amount",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 33,
+        "line": 37,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 34,
+        "line": 37,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 2,
+        "line": 38,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 38,
+        "text": "+=",
+        "token": "tk_assignAdd"
+    },
+    {
+        "colunm": 14,
+        "line": 38,
+        "text": "result",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 20,
+        "line": 38,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 21,
+        "line": 38,
+        "text": "length",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 27,
+        "line": 38,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 2,
+        "line": 39,
+        "text": "return",
+        "token": "kw_return"
+    },
+    {
+        "colunm": 9,
+        "line": 39,
+        "text": "result",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 15,
+        "line": 39,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 40,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 42,
+        "text": "@",
+        "token": "tk_at"
+    },
+    {
+        "colunm": 2,
+        "line": 42,
+        "text": "property",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 42,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 19,
+        "line": 42,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 20,
+        "line": 42,
+        "text": "SourceLocation",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 35,
+        "line": 42,
+        "text": "location",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 43,
+        "line": 42,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 44,
+        "line": 42,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 46,
+        "line": 42,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 43,
+        "text": "return",
+        "token": "kw_return"
+    },
+    {
+        "colunm": 9,
+        "line": 43,
+        "text": "SourceLocation",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 23,
+        "line": 43,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 24,
+        "line": 43,
+        "text": "fromBuffer",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 34,
+        "line": 43,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 35,
+        "line": 43,
+        "text": "text",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 39,
+        "line": 43,
+        "text": ",",
+        "token": "tk_comma"
+    },
+    {
+        "colunm": 41,
+        "line": 43,
+        "text": "position",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 49,
+        "line": 43,
+        "text": ",",
+        "token": "tk_comma"
+    },
+    {
+        "colunm": 51,
+        "line": 43,
+        "text": "file",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 55,
+        "line": 43,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 56,
+        "line": 43,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 44,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 46,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 9,
+        "line": 46,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 10,
+        "line": 46,
+        "text": "void",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 15,
+        "line": 46,
+        "text": "pushToken",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 24,
+        "line": 46,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 25,
+        "line": 46,
+        "text": "def",
+        "token": "kw_def"
+    },
+    {
+        "colunm": 28,
+        "line": 46,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 29,
+        "line": 46,
+        "text": "Token",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 35,
+        "line": 46,
+        "text": "token",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 40,
+        "line": 46,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 42,
+        "line": 46,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 47,
+        "text": "this",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 6,
+        "line": 47,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 7,
+        "line": 47,
+        "text": "tokenBuffer",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 18,
+        "line": 47,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 19,
+        "line": 47,
+        "text": "put",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 22,
+        "line": 47,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 23,
+        "line": 47,
+        "text": "token",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 28,
+        "line": 47,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 29,
+        "line": 47,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 48,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 50,
+        "text": "@",
+        "token": "tk_at"
+    },
+    {
+        "colunm": 2,
+        "line": 50,
+        "text": "property",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 11,
+        "line": 50,
+        "text": "function",
+        "token": "kw_function"
+    },
+    {
+        "colunm": 19,
+        "line": 50,
+        "text": ":",
+        "token": "tk_colon"
+    },
+    {
+        "colunm": 20,
+        "line": 50,
+        "text": "Token",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 25,
+        "line": 50,
+        "text": "[",
+        "token": "tk_leftBracket"
+    },
+    {
+        "colunm": 26,
+        "line": 50,
+        "text": "]",
+        "token": "tk_rightBracket"
+    },
+    {
+        "colunm": 28,
+        "line": 50,
+        "text": "tokens",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 34,
+        "line": 50,
+        "text": "(",
+        "token": "tk_leftParen"
+    },
+    {
+        "colunm": 35,
+        "line": 50,
+        "text": ")",
+        "token": "tk_rightParen"
+    },
+    {
+        "colunm": 37,
+        "line": 50,
+        "text": "{",
+        "token": "tk_leftBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 51,
+        "text": "return",
+        "token": "kw_return"
+    },
+    {
+        "colunm": 9,
+        "line": 51,
+        "text": "this",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 13,
+        "line": 51,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 14,
+        "line": 51,
+        "text": "tokenBuffer",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 25,
+        "line": 51,
+        "text": ".",
+        "token": "tk_dot"
+    },
+    {
+        "colunm": 26,
+        "line": 51,
+        "text": "data",
+        "token": "ud_identifier"
+    },
+    {
+        "colunm": 30,
+        "line": 51,
+        "text": ";",
+        "token": "tk_semicolon"
+    },
+    {
+        "colunm": 1,
+        "line": 52,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 2,
+        "line": 52,
+        "text": "}",
+        "token": "tk_rightBrace"
+    },
+    {
+        "colunm": 1,
+        "line": 53,
+        "text": "<End of File>",
+        "token": "tk_eof"
+    }
+]
