@@ -9,12 +9,14 @@ module omc.main;
 
 import std.stdio;
 import std.file : readText;
+import std.algorithm;
+import std.array;
 import omc.parse.lexer;
 import omc.parse.parser;
 
 void main(string[] args) {
     OmAstModule[] astModules;
-	foreach(file; args) {
+	foreach(file; args[1..$]) {
         auto lexer = OmLexer(file, readText(file));
         auto parser = OmParser(lexer);
         astModules ~= parser.parseModule();

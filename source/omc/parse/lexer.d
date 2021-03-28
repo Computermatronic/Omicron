@@ -34,6 +34,8 @@ struct OmLexer {
 
 	@property bool empty() { return m_empty; }
 
+	@property typeof(this) save() { return this; }
+
 	OmToken front() {
 		if (empty) return OmToken(OmToken.Type.tk_eof, currentLocation, "<End of File>");
 		return lastToken;

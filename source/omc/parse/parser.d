@@ -13,14 +13,14 @@ import omc.utils;
 import omc.parse.lexer;
 
 struct OmParser {
-	alias TokenRange = InputRange!OmToken;
-	mixin ErrorSink;
+	alias TokenRange = ForwardRange!OmToken;
+	mixin ErrorSink!true;
 	private {
 		TokenRange buffer;
 		OmAstAttribute[] attributes;
 	}
 	
-	this(Range)(Range buffer) if (isInputRange!Range && is(ElementType!Range == OmToken)) { 
+	this(Range)(Range buffer) if (isForwardRange!Range && is(ElementType!Range == OmToken)) { 
 		this.buffer = inputRangeObject(buffer);
 		this.attributes = null;
 	}
@@ -352,7 +352,9 @@ struct OmParser {
 					auto node = this.makeNode!OmAstTuple(OmToken.Type.tk_leftParen);
 					node.members = this.parseList!parseExpression();
 					this.expectToken(OmToken.Type.tk_rightParen);
-					expression = node;
+					//Auto-unwrap tuples of 1 value since that's just a parenthesized expression.
+					if (node.members.length == 1) expression = node.members[0];
+					else expression = node;
 					break;
 
 				case kw_typeof:
@@ -483,7 +485,7 @@ struct OmParser {
 					goto nextExpression;
 
 				case tk_asterisk:
-					auto next = buffer.take(2).array[$-1].type;
+					auto next = buffer.save.take(2).array[$-1].type;
 					if (ud_identifier != next && ud_string != next	&& ud_char != next	  && ud_integer != next   && 
 					ud_float != next		  && tk_leftParen != next && tk_increment != next && tk_decrement != next &&
 					tk_plus != next		   && tk_minus != next	 && tk_ampersand != next && tk_asterisk != next  && 

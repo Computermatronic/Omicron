@@ -4,7 +4,6 @@
 	],
 	"copyright": "Copyright © 2018-2021, Sean Campbell",
 	"dependencies": {
-		"llvm-d": "~>3.0.0"
 	},
 	"description": "Omicron-Lang, a programming language written in DLang.",
 	"license": "MPL-2.0",
