@@ -9,12 +9,15 @@ module omc.main;
 
 import std.stdio;
 import std.file : readText;
-import omc.context;
 import omc.parse.lexer;
 import omc.parse.parser;
 
-int main(string[] args) {
-	OmContext context;
-	foreach(file; args) context.astModules ~= OmParser(context, OmLexer(context, file, readText(file))).parseModule();
-	return 0;
+void main(string[] args) {
+    OmAstModule[] astModules;
+	foreach(file; args) {
+        auto lexer = OmLexer(file, readText(file));
+        auto parser = OmParser(lexer);
+        astModules ~= parser.parseModule();
+        if (lexer.errorCount + parser.errorCount > 0) writefln("%-(%s\n%)", lexer.messages ~ parser.messages);
+    }
 }

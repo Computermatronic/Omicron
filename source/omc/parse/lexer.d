@@ -12,23 +12,21 @@ import std.algorithm;
 import std.range;
 import std.string;
 import std.uni;
-import omc.context;
 import omc.utils;
 
 import std.stdio;
 
 struct OmLexer {
+	mixin ErrorSink;
 	private {
 		string buffer;
 		OmToken lastToken;
 		bool m_empty = true;
-		OmContext* context;
 	}
 	string name;
 	string source;
 
-	this(ref OmContext context, string name, string source) { 
-		this.context = &context; 
+	this(string name, string source) { 
 		this.name = name;
 		this.buffer = this.source = source;
 		this.m_empty = !this.parseToken();
@@ -77,7 +75,7 @@ struct OmLexer {
 				}
 				if (buffer.front.isIdentifierChar) { lastToken = parseIdentifier(); return true; }
 				if (buffer.front == '@') { lastToken = parseAttribute(); return true; }
-				context.error(currentLocation, "Unknown or illegal character '%s'.", buffer.front);
+				error(currentLocation, "Unknown or illegal character '%s'.", buffer.front);
 				lastToken = OmToken(OmToken.Type.ud_unknown, currentLocation, cast(string)[buffer.stealFront]);
 				return true;
 			}
@@ -97,7 +95,7 @@ struct OmLexer {
 			buffer.popFrontN(2);
 			auto end = buffer.indexOf("*/");
 			if (end == -1) {
-				context.error(currentLocation, "Unterminated block comment.");
+				error(currentLocation, "Unterminated block comment.");
 				auto lexeme = buffer;
 				buffer.popFrontN(buffer.length);
 				return lexeme;
@@ -122,7 +120,7 @@ struct OmLexer {
 					nestingLevel--;
 				} else subBuffer.popFront();
 			}
-			if (nestingLevel > 0) context.error(currentLocation, "Unterminated nested block comment.");
+			if (nestingLevel > 0) error(currentLocation, "Unterminated nested block comment.");
 			auto end = buffer.length - subBuffer.length;
 			auto lexeme = buffer[0..end];
 			buffer.popFrontN(end);
@@ -137,7 +135,7 @@ struct OmLexer {
 				result.put(parseChar());
 			}
 			token.lexeme = result.data;
-			if (buffer.empty) context.error(token.location, "Unterminated string constant.");
+			if (buffer.empty) error(token.location, "Unterminated string constant.");
 			else buffer.popFront();
 			token.literal = token.lexeme;
 			return token;
@@ -148,7 +146,7 @@ struct OmLexer {
 			buffer.popFront();
 			auto end = buffer.indexOf("`");
 			if (end == -1) {
-				context.error(currentLocation, "Unterminated string literal.");
+				error(currentLocation, "Unterminated string literal.");
 				token.lexeme = buffer;
 				buffer.popFrontN(buffer.length);
 			} else {
@@ -164,7 +162,7 @@ struct OmLexer {
 			buffer.popFront();
 			if (!buffer.empty) { token.lexeme = cast(string)[parseChar()]; token.literal = token.lexeme.front; }
 			if (!buffer.empty) buffer.popFront();
-			else context.error(currentLocation, "Unterminated character literal.");
+			else error(currentLocation, "Unterminated character literal.");
 			return token;
 		}
 
@@ -218,7 +216,7 @@ struct OmLexer {
 				case `\n`: buffer.popFrontN(2); return '\n';
 				case `\t`: buffer.popFrontN(2); return '\t';
 				case `\0`: buffer.popFrontN(2); return '\0';
-				default: context.error(currentLocation, "Unknown escape sequence %s", buffer.take(2).array);
+				default: error(currentLocation, "Unknown escape sequence %s", buffer.take(2).array);
 			}
 			auto c = buffer.front;
 			buffer.popFront();

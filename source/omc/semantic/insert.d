@@ -9,26 +9,25 @@ module omc.semantic.insert;
 
 import std.array;
 import std.container.dlist;
-import omc.context;
 import omc.parse.ast;
 import omc.semantic.symbol;
 import omc.semantic.scope_;
 
 class OmSemanticInserter: OmAstVisitor {
-	OmContext* context;
+	// OmContext* context;
 	DList!OmScope parentScopes;
 
-	this(ref OmContext context) {
-		this.context = &context;
-	}
+	// this(ref OmContext context) {
+	// 	this.context = &context;
+	// }
 	
 	void semanticInsert() {
-		foreach(astModule; context.astModules) {
-			context.moduleSymbols[astModule.packageName.join('.') ~ '.' ~ astModule.name] = makeSymbol!OmModuleSymbol(astModule);
-		}
-		foreach(name, moduleSymbol; context.moduleSymbols) {
-			visitBody(moduleSymbol, moduleSymbol.astNode.members);
-		}
+		// foreach(astModule; context.astModules) {
+		// 	context.moduleSymbols[astModule.packageName.join('.') ~ '.' ~ astModule.name] = makeSymbol!OmModuleSymbol(astModule);
+		// }
+		// foreach(name, moduleSymbol; context.moduleSymbols) {
+		// 	visitBody(moduleSymbol, moduleSymbol.astNode.members);
+		// }
 	}
 
 	void visit(OmAstModule node) { 

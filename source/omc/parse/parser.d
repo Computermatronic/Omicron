@@ -9,20 +9,19 @@ module omc.parse.parser;
 
 public import omc.parse.ast;
 import std.range;
-import omc.context;
 import omc.utils;
 import omc.parse.lexer;
 
 struct OmParser {
+	alias TokenRange = InputRange!OmToken;
+	mixin ErrorSink;
 	private {
-		OmLexer lexer;
+		TokenRange buffer;
 		OmAstAttribute[] attributes;
-		OmContext* context;
 	}
 	
-	this(ref OmContext context, OmLexer lexer) { 
-		this.context = &context; 
-		this.lexer = lexer;
+	this(Range)(Range buffer) if (isInputRange!Range && is(ElementType!Range == OmToken)) { 
+		this.buffer = inputRangeObject(buffer);
 		this.attributes = null;
 	}
 
@@ -33,15 +32,15 @@ struct OmParser {
 			string[] packageName;
 			do {
 				packageName ~= this.expectToken(OmToken.Type.ud_identifier).lexeme;
-			} while(!lexer.empty && this.advanceForToken(OmToken.Type.tk_dot));
+			} while(!buffer.empty && this.advanceForToken(OmToken.Type.tk_dot));
 			node.name = packageName[$-1];
 			node.packageName = packageName[0 .. $ - 1];
 			this.expectToken(OmToken.Type.tk_semicolon);
 		} else {
 			import std.path : baseName, stripExtension;
-			node.name = lexer.front.location.file.baseName().stripExtension();
+			node.name = buffer.front.location.file.baseName().stripExtension();
 		}
-		while(!lexer.empty) {
+		while(!buffer.empty) {
 			node.members ~= this.parseDeclaration();
 		}
 		return node;
@@ -59,10 +58,7 @@ struct OmParser {
 		}
 
 		OmAstDef parseDef() {
-			auto node = this.makeNode!OmAstDef(OmToken.Type.kw_def);
-			if (this.advanceForToken(OmToken.Type.tk_colon)) node.type = this.parseReference();
-			node.name = this.expectToken(OmToken.Type.ud_identifier).lexeme;
-			if (this.advanceForToken(OmToken.Type.tk_assign)) node.initializer = this.parseExpression();
+			auto node = this.parseDefParameter();
 			this.expectToken(OmToken.Type.tk_semicolon);
 			return node;
 		}
@@ -72,7 +68,7 @@ struct OmParser {
 			string[] fullName;
 			do {
 				fullName ~= this.expectToken(OmToken.Type.ud_identifier).lexeme;
-			} while(!lexer.empty && this.advanceForToken(OmToken.Type.tk_dot));
+			} while(!buffer.empty && this.advanceForToken(OmToken.Type.tk_dot));
 			node.name = fullName[$-1];
 			node.packageName = fullName[0..$-1];
 			this.expectToken(OmToken.Type.tk_semicolon);
@@ -83,7 +79,7 @@ struct OmParser {
 			auto node = this.makeNode!OmAstFunction(OmToken.Type.kw_function);
 			if (this.advanceForToken(OmToken.Type.tk_colon)) node.type = this.parseReference();
 			node.name = this.expectToken(OmToken.Type.ud_identifier).lexeme;
-			auto paramaters = this.parseParamaters!parseDef();
+			auto paramaters = this.parseParamaters!parseDefParameter();
 			node.paramaters = paramaters[0];
 			node.isVariadic = paramaters[1];
 			if (this.advanceForToken(OmToken.Type.tk_semicolon)) node.isLinkage = true;
@@ -100,6 +96,14 @@ struct OmParser {
 			node.isVariadic = paramaters[1];
 			if (node.isAnonymous) node.members ~= this.parseDeclaration();
 			else node.members ~= this.parseBlock!parseDeclaration();
+			return node;
+		}
+
+		OmAstDef parseDefParameter() {
+			auto node = this.makeNode!OmAstDef(OmToken.Type.kw_def);
+			if (this.advanceForToken(OmToken.Type.tk_colon)) node.type = this.parseReference();
+			node.name = this.expectToken(OmToken.Type.ud_identifier).lexeme;
+			if (this.advanceForToken(OmToken.Type.tk_assign)) node.initializer = this.parseExpression();
 			return node;
 		}
 
@@ -218,8 +222,8 @@ struct OmParser {
 		OmAstFor parseFor() {
 			auto node = this.makeNode!OmAstFor(OmToken.Type.kw_for);
 			this.expectToken(OmToken.Type.tk_leftParen);
-			if (this.testForToken(OmToken.Type.kw_def)) node.initializer = this.parseDef();
-			this.expectToken(OmToken.Type.tk_semicolon);
+			if (this.testForToken(OmToken.Type.kw_def)) node.initializer = this.parseDefParameter();
+            this.expectToken(OmToken.Type.tk_semicolon);
 			if (!this.testForToken(OmToken.Type.tk_semicolon)) node.subject = this.parseExpression();
 			this.expectToken(OmToken.Type.tk_semicolon);
 			if (!this.testForToken(OmToken.Type.tk_leftParen)) node.step = this.parseExpression();
@@ -231,7 +235,7 @@ struct OmParser {
 		OmAstForeach parseForeach() {
 			auto node = this.makeNode!OmAstForeach(OmToken.Type.kw_foreach);
 			this.expectToken(OmToken.Type.tk_leftParen);
-			node.initializers = this.parseList!parseDef();
+			node.initializers = this.parseList!parseDefParameter();
 			this.expectToken(OmToken.Type.tk_semicolon);
 			node.subject = this.parseExpression();
 			this.expectToken(OmToken.Type.tk_rightParen);
@@ -296,7 +300,7 @@ struct OmParser {
 
 		//Category based parsing functions.
 		OmAstStatement parseStatement() {
-			nextStatement: switch(lexer.front.type) with(OmToken.Type) {
+			nextStatement: switch(buffer.front.type) with(OmToken.Type) {
 				case kw_enum, kw_alias, kw_def, kw_function, kw_template, kw_struct, kw_class, 
 					kw_interface, kw_import: return this.parseDeclaration();
 				case kw_if: return this.parseIf();
@@ -316,7 +320,7 @@ struct OmParser {
 		}
 
 		OmAstDeclaration parseDeclaration() {
-			nextDeclaration: switch(lexer.front.type) with(OmToken.Type) {
+			nextDeclaration: switch(buffer.front.type) with(OmToken.Type) {
 				case kw_enum: return this.parseEnum();
 				case kw_alias: return this.parseAlias();
 				case kw_def: return this.parseDef();
@@ -327,14 +331,17 @@ struct OmParser {
 				case kw_interface: return this.parseInterface();
 				case kw_import: return this.parseImport();
 				case ud_attribute: this.parseAttributes(); goto nextDeclaration;
-				default: context.error(lexer.front.location, "Unrecognized declaration %s", lexer.front.lexeme); return null;
+				default: 
+					error(buffer.front.location, "Unrecognized declaration %s", buffer.front.lexeme); 
+					buffer.popFront();
+					return null;
 			}
 		}
 
 		OmAstExpression parseExpression(int precedence = int.max) {
 			OmAstExpression expression;
 
-			switch(lexer.front.type) with(OmToken.Type) {
+			switch(buffer.front.type) with(OmToken.Type) {
 				case ud_identifier:
 					auto node = this.makeNode!OmAstIdentifier();
 					node.name = this.expectToken(OmToken.Type.ud_identifier).lexeme;
@@ -358,21 +365,21 @@ struct OmParser {
 
 				case tk_asterisk, tk_ampersand:
 					auto node = this.makeNode!OmAstUnaryOperator();
-					node.operator = cast(OmAstUnaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstUnaryOperator.Operator)buffer.stealFront().type;
 					node.subject = this.parseExpression(Precedence.unaryPointerOperator);
 					expression = node;
 					break;
 
 				case tk_plus, tk_minus:
 					auto node = this.makeNode!OmAstUnaryOperator();
-					node.operator = cast(OmAstUnaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstUnaryOperator.Operator)buffer.stealFront().type;
 					node.subject = this.parseExpression(Precedence.unaryNegationOperator);
 					expression = node;
 					break;
 
 				case tk_increment, tk_decrement:
 					auto node = this.makeNode!OmAstUnaryOperator();
-					node.operator = cast(OmAstUnaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstUnaryOperator.Operator)buffer.stealFront().type;
 					node.subject = this.parseExpression(Precedence.unaryIncrementOperator);
 					expression = node;
 					break;
@@ -438,10 +445,13 @@ struct OmParser {
 					expression = node;
 					break;
 
-				default: context.error(lexer.front.location, "Unrecognized expression %s", lexer.front.lexeme); return null;
+				default: 
+					error(buffer.front.location, "Unrecognized expression %s", buffer.front.lexeme); 
+					buffer.popFront();
+					return null;
 			}
 
-			nextExpression: switch(lexer.front.type) with(OmToken.Type) {
+			nextExpression: switch(buffer.front.type) with(OmToken.Type) {
 				case OmToken.Type.tk_dot:
 					if (Precedence.dispatch > precedence) break;
 					auto node = this.makeNode!OmAstDispatch(OmToken.Type.tk_dot);
@@ -473,7 +483,7 @@ struct OmParser {
 					goto nextExpression;
 
 				case tk_asterisk:
-					auto next = lexer.take(2).array[$-1].type;
+					auto next = buffer.take(2).array[$-1].type;
 					if (ud_identifier != next && ud_string != next	&& ud_char != next	  && ud_integer != next   && 
 					ud_float != next		  && tk_leftParen != next && tk_increment != next && tk_decrement != next &&
 					tk_plus != next		   && tk_minus != next	 && tk_ampersand != next && tk_asterisk != next  && 
@@ -488,7 +498,7 @@ struct OmParser {
 					if (Precedence.multiplacativeOperator > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.multiplacativeOperator);
 					expression = node;
 					goto nextExpression;
@@ -497,7 +507,7 @@ struct OmParser {
 					if (Precedence.additiveOperator > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.additiveOperator);
 					expression = node;
 					goto nextExpression;
@@ -506,7 +516,7 @@ struct OmParser {
 					if (Precedence.comparativeOperator > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.comparativeOperator);
 					expression = node;
 					goto nextExpression;
@@ -515,7 +525,7 @@ struct OmParser {
 					if (Precedence.equityOperator > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.equityOperator);
 					expression = node;
 					goto nextExpression;
@@ -524,7 +534,7 @@ struct OmParser {
 					if (Precedence.bitShiftOperator > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.bitShiftOperator);
 					expression = node;
 					goto nextExpression;
@@ -533,7 +543,7 @@ struct OmParser {
 					if (Precedence.bitAnd > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.bitAnd);
 					expression = node;
 					goto nextExpression;
@@ -542,7 +552,7 @@ struct OmParser {
 					if (Precedence.bitOr > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.bitOr);
 					expression = node;
 					goto nextExpression;
@@ -551,7 +561,7 @@ struct OmParser {
 					if (Precedence.bitXor > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.bitXor);
 					expression = node;
 					goto nextExpression;
@@ -560,7 +570,7 @@ struct OmParser {
 					if (Precedence.and > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.and);
 					expression = node;
 					goto nextExpression;
@@ -569,7 +579,7 @@ struct OmParser {
 					if (Precedence.or > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.or);
 					expression = node;
 					goto nextExpression;
@@ -578,7 +588,7 @@ struct OmParser {
 					if (Precedence.xor > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.xor);
 					expression = node;
 					goto nextExpression;
@@ -587,7 +597,7 @@ struct OmParser {
 					if (Precedence.concat > precedence) break;
 					auto node = this.makeNode!OmAstBinaryOperator();
 					node.lhs = expression;
-					node.operator = cast(OmAstBinaryOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstBinaryOperator.Operator)buffer.stealFront().type;
 					node.rhs = this.parseExpression(Precedence.concat);
 					expression = node;
 					goto nextExpression;
@@ -595,7 +605,7 @@ struct OmParser {
 				case tk_increment, tk_decrement:
 				if (Precedence.unaryPostIncrementOperator > precedence) break;
 					auto node = this.makeNode!OmAstUnaryOperator();
-					node.operator = lexer.stealFront().type == tk_increment ? OmAstUnaryOperator.Operator.postIncrement : 
+					node.operator = buffer.stealFront().type == tk_increment ? OmAstUnaryOperator.Operator.postIncrement : 
 						OmAstUnaryOperator.Operator.postDecrement;
 					node.subject = expression;
 					expression = node;
@@ -606,7 +616,7 @@ struct OmParser {
 					if (Precedence.assignmentOperator > precedence) break;
 					auto node = this.makeNode!OmAstAssignmentOperator();
 					node.subject = expression;
-					node.operator = cast(OmAstAssignmentOperator.Operator)lexer.stealFront().type;
+					node.operator = cast(OmAstAssignmentOperator.Operator)buffer.stealFront().type;
 					node.assignment = this.parseExpression(Precedence.assignmentOperator);
 					expression = node;
 					goto nextExpression;
@@ -642,7 +652,7 @@ struct OmParser {
 		OmAstReference parseReference(int precedence = int.max) {
 			OmAstReference reference;
 
-			switch(lexer.front.type) with(OmToken.Type) {
+			switch(buffer.front.type) with(OmToken.Type) {
 				case ud_identifier:
 					auto node = this.makeNode!OmAstIdentifier();
 					node.name = this.expectToken(OmToken.Type.ud_identifier).lexeme;
@@ -663,10 +673,13 @@ struct OmParser {
 					this.expectToken(OmToken.Type.tk_rightParen);
 					reference = node;
 					break;
-				default: context.error(lexer.front.location, "Unrecognized expression %s", lexer.front.lexeme); return null;
+				default: 
+					error(buffer.front.location, "Unrecognized expression %s", buffer.front.lexeme); 
+					buffer.popFront();
+					return null;
 			}
 
-			nextReference: switch(lexer.front.type) with(OmToken.Type) {
+			nextReference: switch(buffer.front.type) with(OmToken.Type) {
 				case OmToken.Type.tk_dot:
 					if (Precedence.dispatch > precedence) break;
 					auto node = this.makeNode!OmAstDispatch(OmToken.Type.tk_dot);
@@ -709,11 +722,14 @@ struct OmParser {
 		}
 
 		OmAstDeclaration parseTemplateParamater() {
-			switch(lexer.front.type) with(OmToken.Type) {
+			switch(buffer.front.type) with(OmToken.Type) {
 				case OmToken.Type.ud_identifier: return this.parseTypeParamater();
 				case OmToken.Type.kw_alias: return this.parseAliasParamater();
-				case OmToken.Type.kw_def: return this.parseDef();
-				default: context.error(lexer.front.location, "Unrecognized declaration %s", lexer.front.lexeme); return null;
+				case OmToken.Type.kw_def: return this.parseDefParameter();
+				default: 
+					error(buffer.front.location, "Unrecognized declaration %s", buffer.front.lexeme); 
+					buffer.popFront();
+					return null;
 			}
 		}
 
@@ -724,7 +740,7 @@ struct OmParser {
 			ReturnType!(func)[] list;
 			do {
 				list ~= func();
-			} while(!lexer.empty && this.advanceForToken(OmToken.Type.tk_comma));
+			} while(!buffer.empty && this.advanceForToken(OmToken.Type.tk_comma));
 			return list;
 		}
 
@@ -735,7 +751,7 @@ struct OmParser {
 			if (this.advanceForToken(OmToken.Type.tk_leftBrace)) {
 				do {
 					block ~= func();
-				} while(!lexer.empty && !this.testForToken(OmToken.Type.tk_rightBrace));
+				} while(!buffer.empty && !this.testForToken(OmToken.Type.tk_rightBrace));
 				this.expectToken(OmToken.Type.tk_rightBrace);
 			} else {
 				block ~= func();
@@ -765,12 +781,12 @@ struct OmParser {
 		}
 
 		bool testForToken(OmToken.Type tokenType) {
-			return lexer.front.type == tokenType;
+			return buffer.front.type == tokenType;
 		}
 
 		bool advanceForToken(OmToken.Type tokenType) {
-			if (lexer.front.type == tokenType) {
-				lexer.stealFront();
+			if (buffer.front.type == tokenType) {
+				buffer.stealFront();
 				return true;
 			} else {
 				return false;
@@ -778,8 +794,8 @@ struct OmParser {
 		}
 
 		OmToken expectToken(OmToken.Type tokenType) {
-			if (lexer.front.type != tokenType) context.error(lexer.front.location, "Expected %s, got '%s'", describeToken(tokenType), lexer.front.lexeme);
-			return lexer.stealFront;
+			if (buffer.front.type != tokenType) error(buffer.front.location, "Expected %s, got '%s'", describeToken(tokenType), buffer.front.lexeme);
+			return buffer.stealFront;
 		}
 
 		Type makeNode(Type)() {
@@ -789,7 +805,7 @@ struct OmParser {
 				node.attributes = this.attributes;
 				this.attributes = null;
 			}
-			node.location = lexer.front.location;
+			node.location = buffer.front.location;
 			return node;
 		}
 

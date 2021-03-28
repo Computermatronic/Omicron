@@ -27,6 +27,27 @@ auto stealFrontN(Range)(ref Range range, size_t amount) {
 	return result;
 }
 
+mixin template ErrorSink(bool failOnError = false) {
+    import std.format;
+	string[] messages;
+	size_t warnCount, errorCount;
+
+	void error(Args...)(OmSrcLocation location, string fmt, Args args) {
+		this.errorCount += 1;
+		messages ~= format("Error: %s in %s", format(fmt, args), location);
+        static if(failOnError) assert(0, messages[$-1]);
+	}
+
+	void warn(Args...)(OmSrcLocation location, string fmt, Args args) {
+		this.warnCount += 1;
+		messages ~= format("Warning: %s in %s", format(fmt, args), location);
+	}
+
+	void info(Args...)(OmSrcLocation location, string fmt, Args args) {
+		messages ~= format("Info: %s in %s", format(fmt, args), location);
+	}
+}
+
 /* This was loosely inspired from asrd.mvd by Adam D. Ruppe, and utilizes some of the same ideas;
  * Usage is simple: just add mixin(MultiDispatch!name); to your class and multiple dispatch will automagically work (or not).
  * Currently it is non-virtual and does not support inheriting from Multi-dispatch classes very well.
