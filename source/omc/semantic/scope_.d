@@ -53,7 +53,7 @@ mixin template OmScopeImpl() {
 		OmSymbol[] result;
 		if (auto existingSymbol = name in symbolTable) result ~= *existingSymbol;
 		result ~= getImportedSymbol(name);
-		result ~= parentScope.findSymbol(name);
+		if (parentScope !is null) result ~= parentScope.findSymbol(name);
 		return result;
 	}
 	

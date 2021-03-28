@@ -21,11 +21,12 @@ interface OmSymbol {
 
 mixin template OmSymbolImpl(OmAstDeclarationType: OmAstDeclaration) {
 	OmAstDeclarationType astNode;
+	OmScope parent;
 
 	@property string name() { return astNode.name; }
 	@property OmSrcLocation location() { return astNode.location; }
 
-	@property OmScope parentScope() { return null; }
+	@property OmScope parentScope() { return parent; }
 	@property OmModuleSymbol parentModule() { 
 		if (auto moduleSymbol = cast(OmModuleSymbol)parentScope) return moduleSymbol;
 		else if (parentScope !is null) return parentScope.parentModule;
@@ -36,6 +37,13 @@ mixin template OmSymbolImpl(OmAstDeclarationType: OmAstDeclaration) {
 class OmModuleSymbol: OmSymbol, OmScope {
 	mixin OmSymbolImpl!OmAstModule;
 	mixin OmScopeImpl;
+
+	OmSymbol[] findSymbol(string name) {
+		OmSymbol[] result;
+		if (auto existingSymbol = name in symbolTable) result ~= *existingSymbol;
+		result ~= getImportedSymbol(name);
+		return result;
+	}
 }
 
 class OmEnumSymbol: OmSymbol, OmScope {

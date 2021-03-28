@@ -16,7 +16,7 @@ struct OmContext {
 	string[] messages;
 	size_t warnCount, errorCount;
 	OmAstModule[] astModules;
-	OmModuleSymbol moduleSymbols;
+	OmModuleSymbol[string] moduleSymbols;
 
 	void error(Args...)(OmSrcLocation location, string fmt, Args args) {
 		this.errorCount += 1;

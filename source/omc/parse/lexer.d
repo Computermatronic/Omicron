@@ -50,9 +50,9 @@ struct OmLexer {
 			while(!buffer.empty) {
 				if (buffer.front.isWhite) { buffer.popFront(); continue; }
 				switch(buffer.take(2).array) {
-					case `\\`: parseLineComment(); break;
-					case `\*`: parseBlockComment(); break;
-					case `\+`: parseNestedBlockComment(); break;
+					case `//`: parseLineComment(); continue;
+					case `/*`: parseBlockComment(); continue;
+					case `/+`: parseNestedBlockComment(); continue;
 					default: break;
 				}
 				switch(buffer.take(1).array) {
@@ -71,12 +71,13 @@ struct OmLexer {
 							auto location = currentLocation;
 							buffer.popFrontN(tokenName.length);
 							lastToken = OmToken(tokenLiterals[tokenName], location, tokenName);
+							return true;
 						}
 					}
 				}
 				if (buffer.front.isIdentifierChar) { lastToken = parseIdentifier(); return true; }
 				if (buffer.front == '@') { lastToken = parseAttribute(); return true; }
-				context.error(currentLocation, `Unknown or illegal character '%s'.`, buffer.front);
+				context.error(currentLocation, "Unknown or illegal character '%s'.", buffer.front);
 				lastToken = OmToken(OmToken.Type.ud_unknown, currentLocation, cast(string)[buffer.stealFront]);
 				return true;
 			}
@@ -136,7 +137,7 @@ struct OmLexer {
 				result.put(parseChar());
 			}
 			token.lexeme = result.data;
-			if (buffer.empty) context.error(currentLocation, "Unterminated string constant.");
+			if (buffer.empty) context.error(token.location, "Unterminated string constant.");
 			else buffer.popFront();
 			token.literal = token.lexeme;
 			return token;
@@ -172,7 +173,7 @@ struct OmLexer {
 			auto subBuffer = buffer;
 			while(!subBuffer.empty && (subBuffer.front.isNumber || subBuffer.front == '.' || subBuffer.front == '_')) {
 				if (subBuffer.front == '.' && token.type != OmToken.Type.ud_float) token.type = OmToken.Type.ud_float;
-				else break;
+				else if (subBuffer.front == '.') break;
 				subBuffer.popFront();
 			}
 			auto end = buffer.length - subBuffer.length;
